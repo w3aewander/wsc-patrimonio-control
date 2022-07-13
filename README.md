@@ -1,4 +1,4 @@
-# API WSC-Patrimônio-API 
+# API WSC-Patrimônio-control
 
 ## Configuração do endpoint para consumo dos recursos contidos na API
 
