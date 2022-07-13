@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>Testando a API</title>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="jumbotron py-4">
+            <h1>Testando acesso aos dados VIA API</h1>
+            <p>CRUD - Create, Retrieve, Update and Delete</p>
+        </div>
+
+        <nav
+            class="navbar navbar-default navbar-fixed-top navbar-expand-lg navbar-fixed-top navbar-fixed-top my-3 bg-light navbar-light">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="nav-item active">
+                    <a class="nav-link" href=""><i class="fa fa-home fa-fw"></i>Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html"><i class="fa fa-list fa-fw"></i> Novo</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html"><i class="fa fa-refresh fa-fw"></i> Atualizar</a>
+                </li>
+
+            </ul>
+        </nav>
+
+
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    Fomulário Master Details
+                </div>
+            </div>
+            <div class="card-body">
+                
+                <div class="row">
+                    <div class="form-group col-md-1">
+                        <label for="id">ID</label>
+                        <input type="text" class="form-control" id="id" name="id" placeholder="0" readonly>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="tipo">Tipo</label>
+                        <input type="text" class="form-control" id="tipo" name="tipo" placeholder="tipo de patrimonio">
+                    </div>
+                    <div class="form-group col-md-7">
+                        <label for="modelo">Modelo</label>
+                        <input type="text" class="form-control" id="modelo" name="modelo" placeholder="modelo...">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label for="observacao">Observação</label>
+                        <input type="text" class="form-control" id="observacao" name="observacao" placeholder="observação">
+                    </div>
+                    
+                </div>
+
+            </div>
+
+            <div class="card-footer">
+                <button type="button" class="btn btn-primary"><i class="fa fa-file"></i> Novo</button>
+                <button type="button" class="btn btn-danger"><i class="fa fa-save"></i> Salvar</button>
+            </div>
+
+        </div>
+
+            
+        <div class="card mt-4">
+
+            <div class="card-header">
+                <div class="card-title">
+                    Listando Patrimonios
+                </div>
+            </div>
+
+            <div class="card-body">
+
+                <table class="table table-striped table-bordered table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tipo</th>
+                            <th>Modelo</th>
+                            <th>Observação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody--patrimonio">
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+
+        const resposta = document.getElementById('retorno')
+
+        const result = document.getElementById("retorno")
+        const endpoint = document.getElementById("endpoint")
+        const btnExecute = document.getElementById("btn--execute")
+
+        
+        const API = "http://localhost:3000/api/"
+        
+        const listarPatrimonios = () => {
+            
+            const tbody = document.getElementById("tbody--patrimonio")
+            
+            fetch(`${API}patrimonios`).then(resp => {
+
+                resp.json().then(r => {
+                      
+                    r.forEach(el => {
+               
+                          tbody.innerHTML += `<tr data-patrimonio="${el.id}" data-tipo="${el.tipo}" data-modelo="${el.modelo}" data-observacao="${el.observacao}">
+                                                <td>${el.id}</td>
+                                                <td>${el.tipo}</td>
+                                                <td>${el.modelo}</td>
+                                                <td>${el.observacao}</td>
+                                                <td><button onclick="editarPatrimonio(event,this);" class="btn btn-primary btn-sm"><i class="fa fa-edit fa-fw"></i> Editar</button></td>
+                                              </tr>`
+                      })  
+                })
+            })
+         }
+
+
+        const editarPatrimonio = (event, el) => {
+            document.getElementById('id').value = el.parentNode.parentNode.getAttribute('data-patrimonio')
+            document.getElementById('tipo').value = el.parentNode.parentNode.getAttribute('data-tipo')
+            document.getElementById('modelo').value = el.parentNode.parentNode.getAttribute('data-modelo')
+            document.getElementById('observacao').value = el.parentNode.parentNode.getAttribute('data-observacao')
+        }
+
+        document.addEventListener("DOMContentLoaded", (event) => {
+
+            listarPatrimonios()
+
+            btnExecute.addEventListener("click", function (e) {
+
+                const btnText = e.target.innerHTML
+                const endPointValue = endpoint.value
+
+                e.target.innerHTML = `<i class="fas fa-spinner fa-spin" aria-hidden="true"></i>`
+
+                let URI = `http://127.0.0.1:3000/api/${endPointValue}`
+
+                result.value = "Processando solicitação..."
+
+                fetch(URI).then((resp) => {
+
+                    console.log(resp)
+
+                    resp.json().then(r => {
+
+                        r.forEach(el => {
+                            result.value += JSON.stringify(el)
+                        })
+                    })
+                })
+                    .catch(err => {
+                        console.log(err)
+                        result.value = err.message
+                    })
+                    .finally(() =>
+                        e.target.innerHTML = `Enviar`
+                    )
+
+            })
+
+
+            document.getElementById('btn--salvar').addEventListener('click', (e) => {
+
+
+                const id = document.getElementById('id').value
+                const tipo = document.getElementById('tipo').value
+                const modelo = document.getElementById('modelo').value
+                const observacao = document.getElementById('observacao').value
+
+
+                fetch('http://localhost:3000/api/patrimonio/add',
+                    {
+                        method: 'POST',
+                        headers: { "Content-type": "application/json; charset=UTF-8" },
+                        body: JSON.stringify({ id: id, tipo: tipo, modelo: modelo, observacao: observacao })
+                    }).then(resp => {
+                        resp.json().then(r => {
+
+                            //  r.forEach(element => {
+
+                            //  });
+
+                            resposta.value = JSON.stringify(r)
+
+                        })
+                    }).catch(err => {
+                        console.log("Erro: " + err.message)
+                    })
+
+            })
+
+        })
+
+    </script>
+</body>
+
+</html>
