@@ -48,7 +48,7 @@
 
                 e.target.innerHTML = `<i class="fas fa-spinner fa-spin" aria-hidden="true"></i>`
 
-                let URI = `http://127.0.0.1:3000/api/${endPointValue}`
+                let URI = `${API}${endPointValue}`
 
                 result.value = "Processando solicitação..."
 
@@ -83,7 +83,7 @@
                 const observacao = document.getElementById('observacao').value
 
 
-                fetch('http://localhost:3000/api/patrimonio/add',
+                fetch(`${API}patrimonio/add`,
                     {
                         method: 'POST',
                         headers: { "Content-type": "application/json; charset=UTF-8" },
